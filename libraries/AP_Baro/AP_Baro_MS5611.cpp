@@ -135,6 +135,30 @@ bool AP_Baro_MS56XX::_init()
             }
         }
         break;
+    case BARO_MS5837_02BA:
+        name = "MS5837";
+        prom_read_ok = _read_prom_5637(prom);
+        // Check for MS5837 product ID from PROM Word 0 (bits 11:5)
+        if (prom_read_ok) {
+            uint8_t product_id = (prom[0] >> 5) & 0x7F; // Extract bits 11-5
+            switch (product_id) {
+            case 0b0000000: // MS5837-02BA01
+                name = "MS5837-02BA01";
+                _ms56xx_type = BARO_MS5837_02BA;
+                break;
+            case 0b0010101: // MS5837-02BA21
+                name = "MS5837-02BA21";
+                _ms56xx_type = BARO_MS5837_02BA;
+                break;
+            case 0b0011010: // MS5837-30BA26
+                name = "MS5837-30BA26";
+                _ms56xx_type = BARO_MS5837;
+                break;
+            default:
+                prom_read_ok = false; // Unsupported sensor type
+            }
+        }
+        break;
     case BARO_MS5637:
         name = "MS5637";
         prom_read_ok = _read_prom_5637(prom);
@@ -390,10 +414,11 @@ void AP_Baro_MS56XX::update()
         break;
     case BARO_MS5837:
         _calculate_5837();
-    }
+        break;
     case BARO_MS5837_02BA: // Add this case
         _calculate_5837_02ba();
         break;
+    }
 }
 
 // Calculate Temperature and compensated Pressure in real units (Celsius degrees*100, mbar*100).
@@ -562,7 +587,8 @@ void AP_Baro_MS56XX::_calculate_5837_02ba() {
         SENS -= SENS2;
     }
 
-    int32_t pressure = (((_D1 * SENS) >> 21) - OFF) >> 15;
+    // Cast _D1 to int64_t before performing multiplication and shift
+    int64_t pressure = ((((int64_t)_D1 * SENS) >> 21) - OFF) >> 15;
 
     // Update frontend with calculated values
     _copy_to_frontend(_instance, (float)pressure / 10, (float)TEMP / 100);
