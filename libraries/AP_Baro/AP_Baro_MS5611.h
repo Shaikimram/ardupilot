@@ -24,6 +24,11 @@
 #define HAL_BARO_MS5837_I2C_ADDR 0x76
 #endif
 
+#ifndef HAL_BARO_MS5837_02BA_I2C_ADDR
+#define HAL_BARO_MS5837_02BA_I2C_ADDR 0x76
+#endif
+
+
 #ifndef HAL_BARO_MS5637_I2C_ADDR
 #define HAL_BARO_MS5637_I2C_ADDR 0x76
 #endif
@@ -37,7 +42,8 @@ public:
         BARO_MS5611 = 0,
         BARO_MS5607 = 1,
         BARO_MS5637 = 2,
-        BARO_MS5837 = 3
+        BARO_MS5837 = 3,
+        BARO_MS5837_02BA = 4 // Add new type here
     };
 
     static AP_Baro_Backend *probe_5611(AP_Baro &baro, AP_HAL::OwnPtr<AP_HAL::Device> dev) {
@@ -52,6 +58,11 @@ public:
     static AP_Baro_Backend *probe_5837(AP_Baro &baro, AP_HAL::OwnPtr<AP_HAL::Device> dev) {
         return probe(baro, std::move(dev), BARO_MS5837);
     }
+    static AP_Baro_Backend *probe_5837_02ba(AP_Baro &baro, AP_HAL::OwnPtr<AP_HAL::Device> dev) {
+    return probe(baro, std::move(dev), BARO_MS5837_02BA);
+}
+
+
 
     static AP_Baro_Backend *probe(AP_Baro &baro, AP_HAL::OwnPtr<AP_HAL::Device> dev, enum MS56XX_TYPE ms56xx_type=BARO_MS5611);
 
@@ -73,6 +84,7 @@ private:
     void _calculate_5607();
     void _calculate_5637();
     void _calculate_5837();
+    void _calculate_5837_02ba();  // Calculate Temperature and Pressure for MS5837-02BA sensor
     bool _read_prom_5611(uint16_t prom[8]);
     bool _read_prom_5637(uint16_t prom[8]);
 
