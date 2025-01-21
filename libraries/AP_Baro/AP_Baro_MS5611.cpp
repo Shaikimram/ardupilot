@@ -391,6 +391,9 @@ void AP_Baro_MS56XX::update()
     case BARO_MS5837:
         _calculate_5837();
     }
+    case BARO_MS5837_02BA: // Add this case
+        _calculate_5837_02ba();
+        break;
 }
 
 // Calculate Temperature and compensated Pressure in real units (Celsius degrees*100, mbar*100).
