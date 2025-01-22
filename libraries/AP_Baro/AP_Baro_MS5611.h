@@ -51,7 +51,7 @@ public:
         return probe(baro, std::move(dev), BARO_MS5637);
     }
     static AP_Baro_Backend *probe_5837(AP_Baro &baro, AP_HAL::OwnPtr<AP_HAL::Device> dev) {
-        return probe(baro, std::move(dev), BARO_MS5837);
+        return probe(baro, std::move(dev), BARO_MS5837_30BA);
     }
 
     static AP_Baro_Backend *probe(AP_Baro &baro, AP_HAL::OwnPtr<AP_HAL::Device> dev, enum MS56XX_TYPE ms56xx_type=BARO_MS5611);

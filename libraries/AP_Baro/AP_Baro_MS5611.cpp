@@ -111,8 +111,8 @@ bool AP_Baro_MS56XX::_init()
     case BARO_MS5611:
         prom_read_ok = _read_prom_5611(prom);
         break;
-    case BARO_MS5837:
-        name = "MS5837";
+    case BARO_MS5837_30BA:
+        name = "MS5837-30BA26";
         prom_read_ok = _read_prom_5637(prom);
         // Check for MS5837 product ID from PROM Word 0 (bits 11:5)
         if (prom_read_ok) {
@@ -136,7 +136,7 @@ bool AP_Baro_MS56XX::_init()
         }
         break;
     case BARO_MS5837_02BA:
-        name = "MS5837";
+        name = "MS5837-30BA26";
         prom_read_ok = _read_prom_5637(prom);
         // Check for MS5837 product ID from PROM Word 0 (bits 11:5)
         if (prom_read_ok) {
@@ -152,7 +152,7 @@ bool AP_Baro_MS56XX::_init()
                 break;
             case 0b0011010: // MS5837-30BA26
                 name = "MS5837-30BA26";
-                _ms56xx_type = BARO_MS5837;
+                _ms56xx_type = BARO_MS5837_30BA;
                 break;
             default:
                 prom_read_ok = false; // Unsupported sensor type
@@ -577,7 +577,7 @@ void AP_Baro_MS56XX::_calculate_5837_02ba() {
 
     if (TEMP < 2000) {
         // Second-order compensation
-        int32_t T2 = (int64_t)11 * sq((int64_t)dT) >> 35;
+        int32_t T2 = ((int64_t)11 * (int64_t)sq((int64_t)dT)) >> 35;
         int64_t aux = sq(TEMP - 2000);
         int64_t OFF2 = 31 * aux >> 3;
         int64_t SENS2 = 63 * aux >> 5;
