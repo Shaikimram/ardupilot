@@ -128,7 +128,7 @@ bool AP_Baro_MS56XX::_init()
                 break;
             case 0b0011010: // MS5837-30BA26
                 name = "MS5837-30BA26";
-                _ms56xx_type = BARO_MS5837;
+                _ms56xx_type = BARO_MS5837_30BA;
                 break;
             default:
                 prom_read_ok = false; // Unsupported sensor type
@@ -196,11 +196,11 @@ bool AP_Baro_MS56XX::_init()
     case BARO_MS5611:
         devtype = DEVTYPE_BARO_MS5611;
         break;
-    case BARO_MS5837:
-        devtype = DEVTYPE_BARO_MS5837;
+    case BARO_MS5837_30BA:
+        devtype = DEVTYPE_BARO_MS5837_30BA;
         break;
     case BARO_MS5837_02BA:
-        devtype = DEVTYPE_BARO_MS5837; // Reuse the same dev type for both variants
+        devtype = DEVTYPE_BARO_MS5837_02BA; // Reuse the same dev type for both variants
         break;
     case BARO_MS5637:
         devtype = DEVTYPE_BARO_MS5637;
@@ -210,7 +210,7 @@ bool AP_Baro_MS56XX::_init()
     _dev->set_device_type(devtype);
     set_bus_id(_instance, _dev->get_bus_id());
 
-    if (_ms56xx_type == BARO_MS5837 || _ms56xx_type == BARO_MS5837_02BA) {
+    if (_ms56xx_type == BARO_MS5837_30BA || _ms56xx_type == BARO_MS5837_02BA) {
         _frontend.set_type(_instance, AP_Baro::BARO_TYPE_WATER);
     }
 
@@ -412,8 +412,8 @@ void AP_Baro_MS56XX::update()
     case BARO_MS5637:
         _calculate_5637();
         break;
-    case BARO_MS5837:
-        _calculate_5837();
+    case BARO_MS5837_30BA:
+        _calculate_5837_30ba();
         break;
     case BARO_MS5837_02BA: // Add this case
         _calculate_5837_02ba();
@@ -535,7 +535,7 @@ void AP_Baro_MS56XX::_calculate_5637()
 }
 
 // Calculate Temperature and compensated Pressure in real units (Celsius degrees*100, mbar*100).
-void AP_Baro_MS56XX::_calculate_5837()
+void AP_Baro_MS56XX::_calculate_5837_30ba()
 {
     int32_t dT, TEMP;
     int64_t OFF, SENS;
@@ -577,10 +577,10 @@ void AP_Baro_MS56XX::_calculate_5837_02ba() {
 
     if (TEMP < 2000) {
         // Second-order compensation
-        int32_t T2 = (dT * dT) >> 31;
-        int64_t TEMP_low = TEMP - 2000;
-        int64_t OFF2 = 5 * (TEMP_low * TEMP_low) >> 1;
-        int64_t SENS2 = (TEMP_low * TEMP_low) >> 3;
+        int32_t T2 = (int64_t)11 * sq((int64_t)dT) >> 35;
+        int64_t aux = sq(TEMP - 2000);
+        int64_t OFF2 = 31 * aux >> 3;
+        int64_t SENS2 = 63 * aux >> 5;
 
         TEMP -= T2;
         OFF -= OFF2;
@@ -591,7 +591,7 @@ void AP_Baro_MS56XX::_calculate_5837_02ba() {
     int64_t pressure = ((((int64_t)_D1 * SENS) >> 21) - OFF) >> 15;
 
     // Update frontend with calculated values
-    _copy_to_frontend(_instance, (float)pressure / 10, (float)TEMP / 100);
+    _copy_to_frontend(_instance, (float)pressure, (float)TEMP / 100);
 }
 
 
