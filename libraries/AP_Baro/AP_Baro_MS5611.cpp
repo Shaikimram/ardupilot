@@ -112,31 +112,8 @@ bool AP_Baro_MS56XX::_init()
         prom_read_ok = _read_prom_5611(prom);
         break;
     case BARO_MS5837_30BA:
-        name = "MS5837-30BA26";
-        prom_read_ok = _read_prom_5637(prom);
-        // Check for MS5837 product ID from PROM Word 0 (bits 11:5)
-        if (prom_read_ok) {
-            uint8_t product_id = (prom[0] >> 5) & 0x7F; // Extract bits 11-5
-            switch (product_id) {
-            case 0b0000000: // MS5837-02BA01
-                name = "MS5837-02BA01";
-                _ms56xx_type = BARO_MS5837_02BA;
-                break;
-            case 0b0010101: // MS5837-02BA21
-                name = "MS5837-02BA21";
-                _ms56xx_type = BARO_MS5837_02BA;
-                break;
-            case 0b0011010: // MS5837-30BA26
-                name = "MS5837-30BA26";
-                _ms56xx_type = BARO_MS5837_30BA;
-                break;
-            default:
-                prom_read_ok = false; // Unsupported sensor type
-            }
-        }
-        break;
     case BARO_MS5837_02BA:
-        name = "MS5837-30BA26";
+        name = "MS5837";
         prom_read_ok = _read_prom_5637(prom);
         // Check for MS5837 product ID from PROM Word 0 (bits 11:5)
         if (prom_read_ok) {
@@ -200,7 +177,7 @@ bool AP_Baro_MS56XX::_init()
         devtype = DEVTYPE_BARO_MS5837_30BA;
         break;
     case BARO_MS5837_02BA:
-        devtype = DEVTYPE_BARO_MS5837_02BA; // Reuse the same dev type for both variants
+        devtype = DEVTYPE_BARO_MS5837_02BA; 
         break;
     case BARO_MS5637:
         devtype = DEVTYPE_BARO_MS5637;

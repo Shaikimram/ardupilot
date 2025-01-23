@@ -51,10 +51,10 @@ public:
         DEVTYPE_BARO_ICP201XX = 0x10,
         DEVTYPE_BARO_MS5607   = 0x11,
         DEVTYPE_BARO_MS5837_30BA = 0x12, // New type for MS5837-30BA
-        DEVTYPE_BARO_MS5837_02BA = 0x13, // New type for MS5837-02BA
-        DEVTYPE_BARO_MS5637   = 0x14,
-        DEVTYPE_BARO_BMP390   = 0x15,
-        DEVTYPE_BARO_BMP581   = 0x16,
+        DEVTYPE_BARO_MS5637   = 0x13,
+        DEVTYPE_BARO_BMP390   = 0x14,
+        DEVTYPE_BARO_BMP581   = 0x15,
+        DEVTYPE_BARO_MS5837_02BA = 0x16,
     };
     
 protected:
