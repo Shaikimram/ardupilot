@@ -392,7 +392,7 @@ void AP_Baro_MS56XX::update()
     case BARO_MS5837_30BA:
         _calculate_5837_30ba();
         break;
-    case BARO_MS5837_02BA: // Add this case
+    case BARO_MS5837_02BA:
         _calculate_5837_02ba();
         break;
     }

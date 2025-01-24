@@ -75,7 +75,7 @@ private:
     void _calculate_5607();
     void _calculate_5637();
     void _calculate_5837_30ba();
-    void _calculate_5837_02ba();  // Calculate Temperature and Pressure for MS5837-02BA sensor
+    void _calculate_5837_02ba();
     bool _read_prom_5611(uint16_t prom[8]);
     bool _read_prom_5637(uint16_t prom[8]);
 
