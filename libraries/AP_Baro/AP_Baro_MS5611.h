@@ -39,7 +39,7 @@ public:
         BARO_MS5637 = 2,
         BARO_MS5837 = 3,
         BARO_MS5837_30BA = 3, // previously assumed variant
-        BARO_MS5837_02BA = 4 // Add new type here
+        BARO_MS5837_02BA = 4 
     };
 
     static AP_Baro_Backend *probe_5611(AP_Baro &baro, AP_HAL::OwnPtr<AP_HAL::Device> dev) {
